@@ -17,5 +17,5 @@ cuDNNバージョン7以前では、APIは固定された一連の操作とフ�
 
 cuDNNライブラリはC APIを公開している一方で、C APIをラップするオープンソースのC++レイヤーも提供しており、ほとんどのユーザーにとってより便利と考えられています。ただし、これはグラフAPIに限定されており、レガシーAPIはサポートしていません。
 
-[コア・コンセプト](core_concept.md)
-[互換性](compatibility.md)
+[コア・コンセプト](core_concept.md)  
+[互換性](compatibility.md)  

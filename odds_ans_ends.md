@@ -29,6 +29,8 @@ cuDNNライブラリはスレッドセーフです。その関数は、同じcuD
 
 ```cpp
 dstValue = alpha * computedValue + beta * priorDstValue
+```
+
 dstValueは読み取り後に書き込まれます。
 
 畳み込みのスケーリングパラメータ

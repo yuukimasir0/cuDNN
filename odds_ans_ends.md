@@ -140,32 +140,32 @@ GPUとドライバの要件
 |s|現在のフィルタの幅|
 |S|総フィルタの幅|
 
-`CuDNN_CROSS_CORRELATION`モードに設定された畳み込み
+*`CuDNN_CROSS_CORRELATION`モードに設定された畳み込み*
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c,r,s}
 ```
-パディング付き畳み込み
+*パディング付き畳み込み*
 ```math
 x_{<0,<0} = 0, x_{>H,>W} = 0, y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r-pad,q+s-pad} \times W_{k,c,r,s}
 ```
-サブサンプルストライド付き畳み込み
+*サブサンプルストライド付き畳み込み*
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,(p*u)+r,(q*v)+s} \times W_{k,c,r,s}
 ```
-ダイレーション付き畳み込み
+*ダイレーション付き畳み込み*
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+(r*dil_h),q+(s*dil_w)} \times W_{k,c,r,s}
 ```
-`CuDNN_CONVOLUTION`モードに設定された畳み込み
+*`CuDNN_CONVOLUTION`モードに設定された畳み込み*
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c,R-r-1,S-s-1}
 ```
-グループ化畳み込みを使用した畳み込み
+*グループ化畳み込みを使用した畳み込み*
 ```math
 C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} \sum_{s}^S x_{n,C_g*floor(\frac{k}{K_g})+c,p+r,q+s} \times W_{k,c,r,s}
 ```
 
-グループ化畳み込み  
+### グループ化畳み込み  
 cuDNNは、畳み込みディスクリプタ`convDesc`に対して`cudnnSetConvolutionGroupCount()`を使用して`groupCount > 1`を設定することで、グループ化畳み込みをサポートします。
 デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は1に設定されています。
 

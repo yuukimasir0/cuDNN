@@ -219,28 +219,19 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 
 | |推奨設定|
 |-|-------|
-|Platform|NVIDIA Hopper architecture
-NVIDIA Ampere architecture
-NVIDIA Turing architecture
-NVIDIA Volta architecture|
+|Platform|NVIDIA Hopper architecture<br>NVIDIA Ampere architecture<br>NVIDIA Turing architecture<br>NVIDIA Volta architecture|
 |Convolution (3D or 2D)|3D and 2D|
 |Convolution or deconvolution (fprop, dgrad, or wgrad)|fprop|
 |dgrad|wgrad|
-|Grouped convolution size|C_per_group == K_per_group == {1,4,8,16,32,64,128,256}
-Not supported for INT8|
+|Grouped convolution size|C_per_group == K_per_group == {1,4,8,16,32,64,128,256}<br>Not supported for INT8|
 |Data layout format (NHWC/NCHW). NHWC/NCHW corresponds to NDHWC/NCDHW in 3D convolution.|NDHWC|
-|I/O precision (FP16, FP32, INT8, or FP64)|FP16
-FP32 - With CUDNN_TENSOROP_MATH_ALLOW_CONVERSION pre-Ampere. Default TF32 math in NVIDIA Ampere architecture.
-INT8 - INT8 does not support dgrad and wgrad. INT8 3D convolutions are only supported in the backend API. Refer to the tables in cudnnConvolutionForward() for more information.|
-|Accumulator (compute) precision (FP16, FP32, INT32 or FP64)|FP32
-INT32|
+|I/O precision (FP16, FP32, INT8, or FP64)|FP16<br>FP32 - With CUDNN_TENSOROP_MATH_ALLOW_CONVERSION pre-Ampere. Default TF32 math in NVIDIA Ampere architecture.<br>INT8 - INT8 does not support dgrad and wgrad. INT8 3D convolutions are only supported in the backend API. Refer to the tables in cudnnConvolutionForward() for more information.|
+|Accumulator (compute) precision (FP16, FP32, INT32 or FP64)|FP32<br>INT32|
 |Filter (kernel) sizes|No limitation|
 |Padding|No limitation|
 |Image sizes|2 GB limitation for a tensor|
-|Number of C channels|0 mod 8
-0 mod 16 (for INT8)|
-|Number of K channels|0 mod 8
-0 mod 16 (for INT8)|
+|Number of C channels|0 mod 8<br>0 mod 16 (for INT8)|
+|Number of K channels|0 mod 8<br>0 mod 16 (for INT8)|
 |Convolution mode|Cross-correlation and convolution|
 |Strides|No limitation|
 |Dilation|No limitation|

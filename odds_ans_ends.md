@@ -145,6 +145,9 @@ GPUとドライバの要件
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c,r,s}
 ```
 パディング付き畳み込み
+```math
+x_{<0,<0} = 0, x_{>H,>W} = 0, y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r-pad,q+s-pad} \times W_{k,c,r,s}
+```
 サブサンプルストライド付き畳み込み
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,(p*u)+r,(q*v)+s} \times W_{k,c,r,s}

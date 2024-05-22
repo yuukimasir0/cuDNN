@@ -13,13 +13,13 @@ cuDNNライブラリはスレッドセーフです。その関数は、同じcuD
 
 ### 再現性（決定論）
 
-設計上、特定のバージョンのほとんどのcuDNNルーチンは、同じアーキテクチャのGPU上で実行された場合、ランごとに同じビット単位の結果を生成します。いくつかの例外があります。たとえば、次のルーチンは、同じアーキテクチャ上でも実行ごとに再現性を保証しません。これは、真にランダムな浮動小数点の丸め誤差を引き起こす方法でアトミック操作を使用するためです：
+設計上、特定のバージョンのほとんどのcuDNNルーチンは、同じアーキテクチャのGPU上で実行された場合、実行ごとに同じビット単位の結果を生成しますがいくつかの例外があります。たとえば、次のルーチンは、同じアーキテクチャ上でも実行ごとに再現性を保証しません。これは、真にランダムな浮動小数点の丸め誤差を引き起こす方法でアトミック操作を使用するためです：
 
-- `CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0`または`CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3`が使用される場合の`cudnnConvolutionBackwardFilter`
-- `CUDNN_CONVOLUTION_BWD_DATA_ALGO_0`が使用される場合の`cudnnConvolutionBackwardData`
-- `CUDNN_POOLING_MAX`が使用される場合の`cudnnPoolingBackward`
+- `CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0`または`CUDNN_CONVOLUTION_BWD_FILTER_ALGO_3`を使用する場合の`cudnnConvolutionBackwardFilter`
+- `CUDNN_CONVOLUTION_BWD_DATA_ALGO_0`を使用する場合の`cudnnConvolutionBackwardData`
+- `CUDNN_POOLING_MAX`を使用する場合の`cudnnPoolingBackward`
 - `cudnnSpatialTfSamplerBackward`
-- `CUDNN_CTC_LOSS_ALGO_NON_DETERMINSTIC`が使用される場合の`cudnnCTCLoss`および`cudnnCTCLoss_v8`
+- `CUDNN_CTC_LOSS_ALGO_NON_DETERMINSTIC`を使用する場合の`cudnnCTCLoss`および`cudnnCTCLoss_v8`
 
 異なるアーキテクチャ間では、cuDNNルーチンはビット単位の再現性を保証しません。たとえば、NVIDIA VoltaとNVIDIA Turingアーキテクチャで同じルーチンを比較する場合、ビット単位の再現性は保証されません。
 

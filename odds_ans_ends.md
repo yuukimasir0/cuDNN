@@ -159,7 +159,7 @@ y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c
 ```
 グループ化畳み込みを使用した畳み込み
 ```math
-C_g = \frac{C}{G} K_g = \frac{K}{G} y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} \sum_{s}^S x_{n,C_g*floor(\frac{k}{K_g})+c,p+r,q+s} \times W_{k,c,r,s}
+C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} \sum_{s}^S x_{n,C_g*floor(\frac{k}{K_g})+c,p+r,q+s} \times W_{k,c,r,s}
 ```
 
 グループ化畳み込み

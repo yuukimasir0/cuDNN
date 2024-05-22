@@ -184,7 +184,7 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は1に設定されています。cuDNNのグループ化畳み込みの数学については、畳み込みの公式を参照してください。
 
 例
-以下に、2D畳み込みの場合のNCHW形式のグループ化畳み込みの次元とストライドを示します。記号*および/は乗算および除算を示すために使用されます。
+以下に、2D畳み込みの場合のNCHW形式のグループ化畳み込みの次元とストライドを示します。記号`*`および`/`は乗算および除算を示すために使用されます。
 
 `xDesc`または`dxDesc`
   - 次元: `[batch_size、input_channel、x_height、x_width]`
@@ -209,19 +209,43 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 
 具体的には、以下の関数およびそれらに関連するデータ型に適用されます：
 
-cudnnConvolutionForward()
-cudnnConvolutionBackwardData()
-cudnnConvolutionBackwardFilter()
-詳細については、cuDNN APIリファレンスを参照してください。
+- `cudnnConvolutionForward()`
+- `cudnnConvolutionBackwardData()`
+- `cudnnConvolutionBackwardFilter()`
+詳細については、[cuDNN APIリファレンス](https://docs.nvidia.com/deeplearning/cudnn/latest/api/overview.html#api-overview)を参照してください。
 
-推奨設定
+#### 推奨設定
 次の表は、cuDNNで3D畳み込みを実行する際の推奨設定を示しています。
 
-プラットフォーム	畳み込み（3Dまたは2D）	畳み込みまたは逆畳み込み（fprop、dgrad、またはwgrad）	グループ化畳み込みのサイズ	データレイアウト形式（NHWC / NCHW）	I / O精度（FP16、FP32、INT8、またはFP64）	アキュムレータ（計算）精度（FP16、FP32、INT32、またはFP64）	フィルタ（カーネル）サイズ	パディング	画像サイズ	Cチャネルの数	Kチャネルの数	畳み込みモード	ストライド	ダイレーション	データポインタのアライメント
-NVIDIA Hopperアーキテクチャ	3Dおよび2D	fprop	C_per_group == K_per_group == {1,4,8,16,32,64,128,256}	NDHWC	FP16	FP32	制限なし	制限なし	テンソルの2GB制限	0 mod 8	0 mod 8	相関および畳み込み	制限なし	制限なし	すべてのデータポインタは16バイトにアライメントされています。
-NVIDIA Ampereアーキテクチャ	3Dおよび2D	dgrad	C_per_group == K_per_group == {1,4,8,16,32,64,128,256}	NDHWC	FP32 - NVIDIA AmpereアーキテクチャのデフォルトのTF32数学。CUDNN_TENSOROP_MATH_ALLOW_CONVERSIONプレアンペア。	INT32	制限なし	制限なし	テンソルの2GB制限	0 mod 8	0 mod 8	相関および畳み込み	制限なし	制限なし	すべてのデータポインタは16バイトにアライメントされています。
-NVIDIA Turingアーキテクチャ	3Dおよび2D	wgrad	C_per_group == K_per_group == {1,4,8,16,32,64,128,256}	NDHWC	INT8 - INT8はdgradおよびwgradをサポートしていません。INT8 3D畳み込みはバックエンドAPIでのみサポートされています。	INT32	制限なし	制限なし	テンソルの2GB制限	0 mod 8	0 mod 8	相関および畳み込み	制限なし	制限なし	すべてのデータポインタは16バイトにアライメントされています。
-NVIDIA Voltaアーキテクチャ	3Dおよび2D	fprop, dgrad, wgrad	C_per_group == K_per_group == {1,4,8,16,32,64,128,256}	NDHWC	INT8 - INT8はdgradおよびwgradをサポートしていません。INT8 3D畳み込みはバックエンドAPIでのみサポートされています。	INT32	制限なし	制限なし	テンソルの2GB制限	0 mod 8	0 mod 8	相関および畳み込み	制限なし	制限なし	すべてのデータポインタは16バイトにアライメントされています。
+||推奨設定|
+||-------|
+|Platform|NVIDIA Hopper architecture
+NVIDIA Ampere architecture
+NVIDIA Turing architecture
+NVIDIA Volta architecture|
+|Convolution (3D or 2D)|3D and 2D|
+|Convolution or deconvolution (fprop, dgrad, or wgrad)|fprop|
+|dgrad|wgrad|
+|Grouped convolution size|C_per_group == K_per_group == {1,4,8,16,32,64,128,256}
+Not supported for INT8|
+|Data layout format (NHWC/NCHW). NHWC/NCHW corresponds to NDHWC/NCDHW in 3D convolution.|NDHWC|
+|I/O precision (FP16, FP32, INT8, or FP64)|FP16
+FP32 - With CUDNN_TENSOROP_MATH_ALLOW_CONVERSION pre-Ampere. Default TF32 math in NVIDIA Ampere architecture.
+INT8 - INT8 does not support dgrad and wgrad. INT8 3D convolutions are only supported in the backend API. Refer to the tables in cudnnConvolutionForward() for more information.|
+|Accumulator (compute) precision (FP16, FP32, INT32 or FP64)|FP32
+INT32|
+|Filter (kernel) sizes|No limitation|
+|Padding|No limitation|
+|Image sizes|2 GB limitation for a tensor|
+|Number of C channels|0 mod 8
+0 mod 16 (for INT8)|
+|Number of K channels|0 mod 8
+0 mod 16 (for INT8)|
+|Convolution mode|Cross-correlation and convolution|
+|Strides|No limitation|
+|Dilation|No limitation|
+|Data pointer alignment|All data pointers are 16-bytes aligned.|
+
 制限事項
 モデルにチャネル数が32未満の場合、パフォーマンスが低下する可能性があります（低くなるほど悪化します）。ネットワークに上記が含まれている場合、cuDNNFind*を使用して最適なオプションを取得してください。
 

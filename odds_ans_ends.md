@@ -53,7 +53,8 @@ dstValueは読み取り後に書き込まれます．
 
 非推奨のenum値は，CUDNN_DEPRECATED_ENUMマクロでマークされます．
 単に名前が変更された場合，古い名前は新しい名前にマッピングされ，古い名前はCUDNN_DEPRECATED_ENUMマクロでマークされます．
-非推奨のAPI関数は，CUDNN_DEPRECATEDマクロでマークされます．
+非推奨のAPI関数は，CUDNN_DEPRECATEDマクロでマークされます．  
+
 **ステップ2: 削除**
 次のメジャーバージョンでは，非推奨のAPI関数またはenum値が削除され，その名前は再利用されません．
 

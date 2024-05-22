@@ -219,23 +219,22 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 
 | |推奨設定|
 |-|-------|
-|Platform|NVIDIA Hopper architecture<br>NVIDIA Ampere architecture<br>NVIDIA Turing architecture<br>NVIDIA Volta architecture|
-|Convolution (3D or 2D)|3D and 2D|
-|Convolution or deconvolution (fprop, dgrad, or wgrad)|fprop|
-|dgrad|wgrad|
-|Grouped convolution size|C_per_group == K_per_group == {1,4,8,16,32,64,128,256}<br>Not supported for INT8|
-|Data layout format (NHWC/NCHW). NHWC/NCHW corresponds to NDHWC/NCDHW in 3D convolution.|NDHWC|
-|I/O precision (FP16, FP32, INT8, or FP64)|FP16<br>FP32 - With CUDNN_TENSOROP_MATH_ALLOW_CONVERSION pre-Ampere. Default TF32 math in NVIDIA Ampere architecture.<br>INT8 - INT8 does not support dgrad and wgrad. INT8 3D convolutions are only supported in the backend API. Refer to the tables in cudnnConvolutionForward() for more information.|
-|Accumulator (compute) precision (FP16, FP32, INT32 or FP64)|FP32<br>INT32|
-|Filter (kernel) sizes|No limitation|
-|Padding|No limitation|
-|Image sizes|2 GB limitation for a tensor|
-|Number of C channels|0 mod 8<br>0 mod 16 (for INT8)|
-|Number of K channels|0 mod 8<br>0 mod 16 (for INT8)|
-|Convolution mode|Cross-correlation and convolution|
-|Strides|No limitation|
-|Dilation|No limitation|
-|Data pointer alignment|All data pointers are 16-bytes aligned.|
+|プラットフォーム|NVIDIA Hopper アーキテクチャ<br>NVIDIA Ampere アーキテクチャ<br>NVIDIA Turing アーキテクチャ<br>NVIDIA Volta アーキテクチャ|
+|畳み込み(3D or 2D)|3D and 2D|
+|畳み込みまたは逆畳み込み (fprop(順伝播勾配), dgrad(逆伝播勾配), or wgrad(重みの勾配))|`fprop`<br>`dgrad`<br>`wgrad`|
+|グループ化畳み込みのサイズ|`C_per_group == K_per_group == {1,4,8,16,32,64,128,256}`<br>INT8はサポートされていません。|
+|データレイアウトフォーマット(NHWC/NCHW). HWC/NCHWは、3D畳み込みにおいてNDHWC/NCDHWに対応します。|NDHWC|
+|I/O 精度(FP16, FP32, INT8, or FP64)|FP16<br>FP32 - Ampereアーキテクチャ以前では`CUDNN_TENSOROP_MATH_ALLOW_CONVERSION`を利用する。NVIDIA Ampere アーキテクチャではデフォルトでTF32(Tensor Float 32)が使用されます。<br>INT8 - INT8はdgradとwgradではサポートされていません. INT8での3D畳み込みはバックエンドAPIのみでサポートされています。詳しくは`cudnnConvolutionForward()`の表を参照してください。|
+|アキュムレート(計算)精度 (FP16, FP32, INT32 or FP64)|FP32<br>INT32|
+|フィルター(カーネル)サイズ|制限なし|
+|パディング|制限なし|
+|画像サイズ|2 GB limitation for a tensor|
+|Cチャンネルの数|0 mod 8<br>0 mod 16 (INT8の場合)|
+|Kチャンネルの数|0 mod 8<br>0 mod 16 (INT8の場合)|
+|畳み込みモード|Cross-correlation(相互相関), convolution(畳み込み)|
+|ストライド|制限なし|
+|拡張|制限なし|
+|データポインタアラインメント|すべてのデータが16Byte境界揃えられている。|
 
 制限事項
 モデルにチャネル数が32未満の場合、パフォーマンスが低下する可能性があります（低くなるほど悪化します）。ネットワークに上記が含まれている場合、cuDNNFind*を使用して最適なオプションを取得してください。

@@ -32,7 +32,7 @@ dstValue = alpha * computedValue + beta * priorDstValue
 ```
 
 dstValueは読み取り後に書き込まれます。
-
+![](img/alpha-beta-dstValue.png)
 畳み込みのスケーリングパラメータ
 `beta`がゼロの場合、出力は読み取られず、未初期化のデータ（NaNを含む）が含まれている可能性があります。
 

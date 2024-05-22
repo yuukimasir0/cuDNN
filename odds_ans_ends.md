@@ -1,3 +1,7 @@
+<div style="border: 2px solid green; padding: 10px; border-radius: 5px; background-color: #e6ffe6;">
+<strong>Note</strong><br>
+Except for the environment variables listed above, we provide no support or guarantee on the use of any other environment variables prefixed by <code>CUDNN_</code>.
+</div>
 
 ## 雑多な事項
 

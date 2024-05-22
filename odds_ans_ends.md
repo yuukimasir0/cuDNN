@@ -219,16 +219,16 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 
 | |推奨設定|
 |-|-------|
-|プラットフォーム|NVIDIA Hopper アーキテクチャ<br>NVIDIA Ampere アーキテクチャ<br>NVIDIA Turing アーキテクチャ<br>NVIDIA Volta アーキテクチャ|
+|プラットフォーム|<ul><li>NVIDIA Hopper アーキテクチャ</li><li>NVIDIA Ampere アーキテクチャ</li><li>NVIDIA Turing アーキテクチャ</li><li>NVIDIA Volta アーキテクチャ</li></ul>|
 |畳み込み(3D or 2D)|3D and 2D|
-|畳み込みまたは逆畳み込み (fprop(順伝播勾配), dgrad(逆伝播勾配), or wgrad(重みの勾配))|`fprop`<br>`dgrad`<br>`wgrad`|
-|グループ化畳み込みのサイズ|`C_per_group == K_per_group == {1,4,8,16,32,64,128,256}`<br>INT8はサポートされていません。|
+|畳み込みまたは逆畳み込み (fprop(順伝播勾配), dgrad(逆伝播勾配), or wgrad(重みの勾配))|<ul><li>`fprop`</li><li>`dgrad`</li><li>`wgrad`</li></ul>|
+|グループ化畳み込みのサイズ|<ul><li>`C_per_group == K_per_group == {1,4,8,16,32,64,128,256}`</li><li>INT8はサポートされていません。</li></ul>|
 |データレイアウトフォーマット(NHWC/NCHW). HWC/NCHWは、3D畳み込みにおいてNDHWC/NCDHWに対応します。|NDHWC|
 |I/O 精度(FP16, FP32, INT8, or FP64)| <ul><li>FP16</li><li>FP32 - Ampereアーキテクチャ以前では `CUDNN_TENSOROP_MATH_ALLOW_CONVERSION` を設定することで利用可能。NVIDIA AmpereアーキテクチャではデフォルトでTF32(Tensor Float 32)が使用されます。</li><li>INT8 - INT8はdgradとwgradではサポートされていません。INT8での3D畳み込みはバックエンドAPIのみでサポートされています。詳しくは `cudnnConvolutionForward()` の表を参照してください。</li></ul>|
 |アキュムレート(計算)精度 (FP16, FP32, INT32 or FP64)|FP32<br>INT32|
 |フィルター(カーネル)サイズ|制限なし|
 |パディング|制限なし|
-|画像サイズ|2 GB limitation for a tensor|
+|画像サイズ|一つのテンソルあたり2GBの制限|
 |Cチャンネルの数|0 mod 8<br>0 mod 16 (INT8の場合)|
 |Kチャンネルの数|0 mod 8<br>0 mod 16 (INT8の場合)|
 |畳み込みモード|Cross-correlation(相互相関), convolution(畳み込み)|

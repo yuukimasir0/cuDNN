@@ -1,8 +1,3 @@
-<div style="border: 2px solid green; padding: 10px; border-radius: 5px; background-color: #e6ffe6;">
-<strong>Note</strong><br>
-Except for the environment variables listed above, we provide no support or guarantee on the use of any other environment variables prefixed by <code>CUDNN_</code>.
-</div>
-
 ## 雑多な事項
 
 このセクションには、さまざまなトピックや概念が含まれています。
@@ -206,9 +201,10 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
   - ストライド:  `[output_channels * y_height * y_width、y_height * y_width、y_width、1]`
   
 #### 3D畳み込みのベストプラクティス
-```
-注意:  これらのガイドラインは、NVIDIA cuDNN v7.6.3以降の3D畳み込みおよび逆畳み込み関数に適用されます。
-```  
+
+> ###注意
+> これらのガイドラインは、NVIDIA cuDNN v7.6.3以降の3D畳み込みおよび逆畳み込み関数に適用されます。
+  
 以下のガイドラインは、3D畳み込みのパフォーマンスを向上させるためにcuDNNライブラリのパラメータを設定するためのものです。具体的には、フィルタサイズ、パディング、およびダイレーション設定などの設定に焦点を当てています。さらに、医療画像処理というアプリケーション固有のユースケースが提示され、これらの推奨設定を使用した3D畳み込みのパフォーマンス向上が示されています。
 
 具体的には、以下の関数およびそれらに関連するデータ型に適用されます: 
@@ -254,9 +250,8 @@ cuDNNの動作は、一連の環境変数を通じて影響を受ける可能性
 - `CUDNN_FORWARD_COMPAT_DISABLE`
 これらの変数の詳細については、[cuDNN APIリファレンス](https: //docs.nvidia.com/deeplearning/cudnn/latest/api/overview.html#api-overview)を参照してください。
 
-```
-注意:   上記の環境変数を除いて、`CUDNN_`で始まる他の環境変数の使用に関しては、サポートや保証は提供されません。
-```
+> ### 注意
+> 上記の環境変数を除いて、`CUDNN_`で始まる他の環境変数の使用に関しては、サポートや保証は提供されません。
 
 ### SMカーブアウト
 cuDNN 8.9.5以降、NVIDIA Hopper GPUでSMカーブアウトがサポートされており、エキスパートユーザーは別のCUDAストリームで同時実行するためにSMを予約することができます。ユーザーは、cuDNNヒューリスティックスに目標SM数を設定し、その数のSMを使用して実行するエンジン設定のリストを取得できます。cuDNNヒューリスティックスを使用せずに高度なユースケースでは、SMカーブアウトを設定してエンジン設定を最初から作成することもできます(この機能をサポートするエンジンは以下の表に記載されています)。

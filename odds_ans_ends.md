@@ -42,20 +42,20 @@ dstValueは読み取り後に書き込まれます。
 `DOUBLE`テンソルの場合は`double`
 パフォーマンスを向上させるには、`beta = 0.0`を使用します。出力テンソルの現在の値と以前の値をブレンドする必要がある場合にのみ、betaにゼロ以外の値を使用します。
 
-型変換
+**型変換**
 データ入力`x`、フィルタ入力`w`、および出力`y`がすべてINT8データ型の場合、関数`cudnnConvolutionBiasActivationForward()`は型変換を行います。アキュムレータはオーバーフロー時にラップする32ビット整数です。
 ![](img/cudnnConvolutionBiasActivationForward.png)
 
-非推奨ポリシー
-cuDNNは、すべてのAPIおよびenumの変更に対して、迅速なイノベーションを可能にするために、簡略化された2段階の非推奨ポリシーを使用します：
+### 非推奨ポリシー
+**cuDNNは、すべてのAPIおよびenumの変更に対して、迅速なイノベーションを可能にするために、簡略化された2段階の非推奨ポリシーを使用します：**
 
-ステップ1：非推奨のラベル付け
+**ステップ1：非推奨のラベル付け**
 現在のメジャーバージョンでは、動作を変更せずにAPI関数またはenumを非推奨としてマークします。
 
 非推奨のenum値は、CUDNN_DEPRECATED_ENUMマクロでマークされます。
 単に名前が変更された場合、古い名前は新しい名前にマッピングされ、古い名前はCUDNN_DEPRECATED_ENUMマクロでマークされます。
 非推奨のAPI関数は、CUDNN_DEPRECATEDマクロでマークされます。
-ステップ2：削除
+**ステップ2：削除**
 次のメジャーバージョンでは、非推奨のAPI関数またはenum値が削除され、その名前は再利用されません。
 
 この非推奨スキームにより、非推奨のAPIを1つのメジャーリリースで廃止できます。現在のメジャーリリースで非推奨となった機能は、変更なしでコンパイルできます。次のメジャーcuDNNリリースが導入されると、後方互換性は終了します。
@@ -83,23 +83,23 @@ warning: 'EXAMPLE_VAL' is deprecated: value not allowed [-Wdeprecated-declaratio
 warning  C4996: 'EXAMPLE_VAL': was declared deprecated
 ```
 
-特別なケース：APIの動作変更
+**特別なケース：APIの動作変更**
 開発者への驚きを避けるために、特定のAPI関数の2つのメジャーバージョン間の動作変更は、関数に`_v`タグを付け、現在のメジャーcuDNNバージョンに続く形式で対応します。次のメジャーリリースでは、非推奨の関数が削除され、その名前は再利用されません（新しいAPIはまず`_v`タグなしで導入されます）。
 
 このように関数の動作を更新することで、API呼び出しが変更されたcuDNNバージョンをAPIの名前に埋め込むことができます。その結果、APIの変更は追跡および文書化が容易になります。
 
 cuDNNの2つの連続したメジャーリリース、バージョン8および9を使用した例を使用して、このプロセスを説明します。この例では、API関数`foo()`の動作がcuDNN v7からcuDNN v8に変更されます。
 
-メジャーリリース8
+**メジャーリリース8**
 更新されたAPIは`foo_v8()`として導入されます。後方互換性を維持するために、非推奨のAPI`foo()`は次のメジャーリリースまで変更されません。
 
-メジャーリリース9
+**メジャーリリース9**
 非推奨のAPI `foo()`は永久に削除され、その名前は再利用されません。`foo_v8()`関数は、廃止された`foo()`呼び出しに取って代わります。
 
-GPUとドライバの要件
+### GPUとドライバの要件
 最新の互換性ソフトウェアバージョン、OS、CUDA、CUDAドライバ、およびNVIDIAハードウェアについては、[cuDNNサポートマトリックス](https://docs.nvidia.com/deeplearning/cudnn/latest/reference/support-matrix.html#support-matrix)を参照してください。
 
-畳み込みのための規約と機能
+### 畳み込みのための規約と機能
 畳み込み関数は次のとおりです：
 
 - cudnnConvolutionBackwardData()
@@ -108,7 +108,7 @@ GPUとドライバの要件
 - cudnnConvolutionBackwardBias()
 - cudnnConvolutionBackwardFilter()
 
-畳み込みの公式
+### 畳み込みの公式
 このセクションでは、`cudnnConvolutionForward()`パスのcuDNN畳み込み関数で実装されているさまざまな畳み込み公式について説明します。
 
 次の表に示す畳み込み用語は、後に続くすべての畳み込み公式に適用されます。
@@ -140,27 +140,27 @@ GPUとドライバの要件
 |s|現在のフィルタの幅|
 |S|総フィルタの幅|
 
-*`CuDNN_CROSS_CORRELATION`モードに設定された畳み込み*
+**`CuDNN_CROSS_CORRELATION`モードに設定された畳み込み**
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c,r,s}
 ```
-*パディング付き畳み込み*
+**パディング付き畳み込み**
 ```math
 x_{<0,<0} = 0, x_{>H,>W} = 0, y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r-pad,q+s-pad} \times W_{k,c,r,s}
 ```
-*サブサンプルストライド付き畳み込み*
+**サブサンプルストライド付き畳み込み**
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,(p*u)+r,(q*v)+s} \times W_{k,c,r,s}
 ```
-*ダイレーション付き畳み込み*
+**ダイレーション付き畳み込み**
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+(r*dil_h),q+(s*dil_w)} \times W_{k,c,r,s}
 ```
-*`CuDNN_CONVOLUTION`モードに設定された畳み込み*
+**`CuDNN_CONVOLUTION`モードに設定された畳み込み**
 ```math
 y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c,R-r-1,S-s-1}
 ```
-*グループ化畳み込みを使用した畳み込み*
+**グループ化畳み込みを使用した畳み込み**
 ```math
 C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} \sum_{s}^S x_{n,C_g*floor(\frac{k}{K_g})+c,p+r,q+s} \times W_{k,c,r,s}
 ```
@@ -169,37 +169,39 @@ C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} 
 cuDNNは、畳み込みディスクリプタ`convDesc`に対して`cudnnSetConvolutionGroupCount()`を使用して`groupCount > 1`を設定することで、グループ化畳み込みをサポートします。
 デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は1に設定されています。
 
-基本的な考え方
-概念的には、グループ化畳み込みでは、入力チャネルとフィルタチャネルが独立したグループの`groupCount`数に分割され、各グループにはチャネル数が減少します。その後、これらの入力グループとフィルタグループに対して別々に畳み込み操作が実行されます。例えば、次のように考えてください：入力チャネルの数が4で、フィルタチャネルの数が12の場合。通常の非グループ化畳み込みでは、実行される計算操作の数は12*4です。
+**基本的な考え方**
+概念的には、グループ化畳み込みでは、入力チャネルとフィルタチャネルが独立したグループの`groupCount`数に分割され、各グループにはチャネル数が減少します。その後、これらの入力グループとフィルタグループに対して別々に畳み込み操作が実行されます。例えば、次のように考えてください：入力チャネルの数が4で、フィルタチャネルの数が12の場合。通常の非グループ化畳み込みでは、実行される計算操作の数は12\*4です。
 
-groupCountが2に設定されている場合、2つの入力チャネルグループ（各2つの入力チャネルを含む）と2つのフィルタチャネルグループ（各6つのフィルタチャネルを含む）が存在します。その結果、各グループ化された畳み込みは2\*6の計算操作を実行し、2つのグループ化された畳み込みが実行されます。したがって、計算の節約は2倍：（12\*4）/（2\*（2\*6））。
+`groupCount`が2に設定されている場合、2つの入力チャネルグループ(各2つの入力チャネルを含む)と2つのフィルタチャネルグループ(各6つのフィルタチャネルを含む)が存在します。その結果、各グループ化された畳み込みは2\*6の計算操作を実行し、2つのグループ化された畳み込みが実行されます。したがって、計算の節約は2倍：(12\*4)/(2\*(2\*6))。
 
-cuDNNグループ化畳み込み
-グループ化畳み込みにgroupCountを使用する場合でも、テンソルディスクリプタをすべて定義して、グループごとのサイズではなく、畳み込み全体のサイズを説明する必要があります。
+**cuDNNグループ化畳み込み**
+グループ化畳み込みに`groupCount`を使用する場合でも、テンソルディスクリプタをすべて定義して、グループごとのサイズではなく、畳み込み全体のサイズを説明する必要があります。
 
-グループ化畳み込みは、cudnnConvolutionForward()、cudnnConvolutionBackwardData()、およびcudnnConvolutionBackwardFilter()の関数で現在サポートされているすべての形式に対してサポートされています。
+グループ化畳み込みは、`cudnnConvolutionForward()`、`cudnnConvolutionBackwardData()`、および`cudnnConvolutionBackwardFilter()`の関数で現在サポートされているすべての形式に対してサポートされています。
 
 groupCount 1に設定されたテンソルのストライドも、任意のグループカウントに対して有効です。
 
-デフォルトでは、畳み込みディスクリプタconvDescはgroupCount 1に設定されています。cuDNNのグループ化畳み込みの数学については、畳み込みの公式を参照してください。
+デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は1に設定されています。cuDNNのグループ化畳み込みの数学については、畳み込みの公式を参照してください。
 
 例
 以下に、2D畳み込みの場合のNCHW形式のグループ化畳み込みの次元とストライドを示します。記号*および/は乗算および除算を示すために使用されます。
 
-xDescまたはdxDesc
-次元：[batch_size、input_channel、x_height、x_width]
-ストライド：[input_channels * x_height * x_width、x_height * x_width、x_width、1]
-wDescまたはdwDesc
-次元：[output_channels、input_channels / groupCount、w_height、w_width]
-形式：NCHW
-convDesc
-グループ数：groupCount
-yDescまたはdyDesc
-次元：[batch_size、output_channels、y_height、y_width]
-ストライド：[output_channels * y_height * y_width、y_height * y_width、y_width、1]
-3D畳み込みのベストプラクティス
-注意: これらのガイドラインは、NVIDIA cuDNN v7.6.3以降の3D畳み込みおよび逆畳み込み関数に適用されます。
+`xDesc`または`dxDesc`
+- 次元: `[batch_size、input_channel、x_height、x_width]`
+- ストライド: `[input_channels * x_height * x_width、x_height * x_width、x_width、1]`
+`wDesc`または`dwDesc`
+- 次元: `[output_channels、input_channels / groupCount、w_height、w_width]`
+- 形式: `NCHW`
+`convDesc`
+- グループ数：`groupCount`
+`yDesc`または`dyDesc`
+- 次元: `[batch_size、output_channels、y_height、y_width]`
+- ストライド: `[output_channels * y_height * y_width、y_height * y_width、y_width、1]`
 
+### 3D畳み込みのベストプラクティス
+```
+注意: これらのガイドラインは、NVIDIA cuDNN v7.6.3以降の3D畳み込みおよび逆畳み込み関数に適用されます。
+```  
 以下のガイドラインは、3D畳み込みのパフォーマンスを向上させるためにcuDNNライブラリのパラメータを設定するためのものです。具体的には、フィルタサイズ、パディング、およびダイレーション設定などの設定に焦点を当てています。さらに、医療画像処理というアプリケーション固有のユースケースが提示され、これらの推奨設定を使用した3D畳み込みのパフォーマンス向上が示されています。
 
 具体的には、以下の関数およびそれらに関連するデータ型に適用されます：

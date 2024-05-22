@@ -221,7 +221,7 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 |-|-------|
 |プラットフォーム|<ul><li>NVIDIA Hopper アーキテクチャ</li><li>NVIDIA Ampere アーキテクチャ</li><li>NVIDIA Turing アーキテクチャ</li><li>NVIDIA Volta アーキテクチャ</li></ul>|
 |畳み込み(3D or 2D)|3D and 2D|
-|畳み込みまたは逆畳み込み (fprop(順伝播勾配), dgrad(逆伝播勾配), or wgrad(重みの勾配))|<ul><li>`fprop`</li><li>`dgrad`</li><li>`wgrad`</li></ul>|
+|畳み込みまたは逆畳み込み (fprop, dgrad, or wgrad)|<ul><li>`fprop`(順伝播勾配)</li><li>`dgrad`(逆伝播勾配)</li><li>`wgrad`(重みの勾配)</li></ul>|
 |グループ化畳み込みのサイズ|<ul><li>`C_per_group == K_per_group == {1,4,8,16,32,64,128,256}`</li><li>INT8はサポートされていません。</li></ul>|
 |データレイアウトフォーマット(NHWC/NCHW). HWC/NCHWは、3D畳み込みにおいてNDHWC/NCDHWに対応します。|NDHWC|
 |I/O 精度(FP16, FP32, INT8, or FP64)| <ul><li>FP16</li><li>FP32 - Ampereアーキテクチャ以前では `CUDNN_TENSOROP_MATH_ALLOW_CONVERSION` を設定することで利用可能。NVIDIA AmpereアーキテクチャではデフォルトでTF32(Tensor Float 32)が使用されます。</li><li>INT8 - INT8はdgradとwgradではサポートされていません。INT8での3D畳み込みはバックエンドAPIのみでサポートされています。詳しくは `cudnnConvolutionForward()` の表を参照してください。</li></ul>|

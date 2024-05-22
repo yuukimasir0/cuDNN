@@ -187,16 +187,16 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 以下に、2D畳み込みの場合のNCHW形式のグループ化畳み込みの次元とストライドを示します。記号*および/は乗算および除算を示すために使用されます。
 
 `xDesc`または`dxDesc`
-- 次元: `[batch_size、input_channel、x_height、x_width]`
-- ストライド: `[input_channels * x_height * x_width、x_height * x_width、x_width、1]`  
+  - 次元: `[batch_size、input_channel、x_height、x_width]`
+  - ストライド: `[input_channels * x_height * x_width、x_height * x_width、x_width、1]`  
 `wDesc`または`dwDesc`
-- 次元: `[output_channels、input_channels / groupCount、w_height、w_width]`
-- 形式: `NCHW`  
+  - 次元: `[output_channels、input_channels / groupCount、w_height、w_width]`
+  - 形式: `NCHW`  
 `convDesc`
-- グループ数：`groupCount`  
+  - グループ数：`groupCount`  
 `yDesc`または`dyDesc`
-- 次元: `[batch_size、output_channels、y_height、y_width]`
-- ストライド: `[output_channels * y_height * y_width、y_height * y_width、y_width、1]`
+  - 次元: `[batch_size、output_channels、y_height、y_width]`
+  - ストライド: `[output_channels * y_height * y_width、y_height * y_width、y_width、1]`
   
 ### 3D畳み込みのベストプラクティス
 ```

@@ -165,8 +165,9 @@ y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S x_{n,c,p+r,q+s} \times W_{k,c
 C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} \sum_{s}^S x_{n,C_g*floor(\frac{k}{K_g})+c,p+r,q+s} \times W_{k,c,r,s}
 ```
 
-グループ化畳み込み
-cuDNNは、畳み込みディスクリプタconvDescに対してcudnnSetConvolutionGroupCount()を使用してgroupCount > 1を設定することで、グループ化畳み込みをサポートします。デフォルトでは、畳み込みディスクリプタconvDescはgroupCount 1に設定されています。
+グループ化畳み込み  
+cuDNNは、畳み込みディスクリプタ`convDesc`に対して`cudnnSetConvolutionGroupCount()`を使用して`groupCount > 1`を設定することで、グループ化畳み込みをサポートします。
+デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は$1$に設定されています。
 
 基本的な考え方
 概念的には、グループ化畳み込みでは、入力チャネルとフィルタチャネルが独立したグループのgroupCount数に分割され、各グループにはチャネル数が減少します。その後、これらの入力グループとフィルタグループに対して別々に畳み込み操作が実行されます。例えば、次のように考えてください：入力チャネルの数が4で、フィルタチャネルの数が12の場合。通常の非グループ化畳み込みでは、実行される計算操作の数は12*4です。

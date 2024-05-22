@@ -188,16 +188,16 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 
 `xDesc`または`dxDesc`
 - 次元: `[batch_size、input_channel、x_height、x_width]`
-- ストライド: `[input_channels * x_height * x_width、x_height * x_width、x_width、1]`
+- ストライド: `[input_channels * x_height * x_width、x_height * x_width、x_width、1]`  
 `wDesc`または`dwDesc`
 - 次元: `[output_channels、input_channels / groupCount、w_height、w_width]`
-- 形式: `NCHW`
+- 形式: `NCHW`  
 `convDesc`
-- グループ数：`groupCount`
+- グループ数：`groupCount`  
 `yDesc`または`dyDesc`
 - 次元: `[batch_size、output_channels、y_height、y_width]`
 - ストライド: `[output_channels * y_height * y_width、y_height * y_width、y_width、1]`
-
+  
 ### 3D畳み込みのベストプラクティス
 ```
 注意: これらのガイドラインは、NVIDIA cuDNN v7.6.3以降の3D畳み込みおよび逆畳み込み関数に適用されます。

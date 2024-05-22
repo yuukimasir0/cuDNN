@@ -251,8 +251,7 @@ cuDNNの動作は、一連の環境変数を通じて影響を受ける可能性
 これらの変数の詳細については、[cuDNN APIリファレンス](https: //docs.nvidia.com/deeplearning/cudnn/latest/api/overview.html#api-overview)を参照してください。
 
 ```
-注意
-上記の環境変数を除いて、`CUDNN_`で始まる他の環境変数の使用に関しては、サポートや保証は提供されません。
+注意:   上記の環境変数を除いて、`CUDNN_`で始まる他の環境変数の使用に関しては、サポートや保証は提供されません。
 ```
 
 ### SMカーブアウト
@@ -286,7 +285,7 @@ cuDNNバックエンドエンジンでSMカーブアウトをサポートして�
 |<li>6</li><li>58</li><li>61</li><li>62</li><li>64</li><li>65</li><li>66</li><li>67</li><li>68</li><li>69</li>|<li>7</li><li>63</li><li>66</li><li>67</li><li>68</li><li>69</li><li>70</li><li>71</li><li>72</li><li>73</li><li>75</li><li>76</li>|<li>17</li><li>62</li><li>64</li><li>65</li><li>66</li><li>68</li>|<li>14</li><li>39</li><li>40</li><li>41</li><li>42</li><li>43</li>|
 
 ### バージョンチェック`CUDNN_VERSION`
-CUDNN_VERSIONの定義は次のとおりです。
+CUDNN_VERSIONの定義は次のとおりです。  
 旧定義:  
 ```cpp
 CUDNN_MAJOR * 10000 + CUDNN_MINOR * 100 + CUDNN_PATCHLEVEL

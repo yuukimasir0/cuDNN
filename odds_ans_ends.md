@@ -141,7 +141,7 @@ GPUとドライバの要件
 |S|総フィルタの幅|
 
 `CuDNN_CROSS_CORRELATION`モードに設定された畳み込み
-$y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S s_{n,c,p+r,q+s} \times W_{k,c,r,s}$
+$y_{n,k,p,q} = {\sum_{c}}^{C} \sum_{r}^{R} \sum_{s}^S s_{n,c,p+r,q+s} \times W_{k,c,r,s}$
 パディング付き畳み込み
 サブサンプルストライド付き畳み込み
 ダイレーション付き畳み込み

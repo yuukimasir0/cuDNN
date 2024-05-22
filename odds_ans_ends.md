@@ -31,12 +31,12 @@ cuDNNライブラリはスレッドセーフです。その関数は、同じcuD
 dstValue = alpha * computedValue + beta * priorDstValue
 ```
 
-dstValueは読み取り後に書き込まれます。
-![](img/alpha-beta-dstValue.png)
-畳み込みのスケーリングパラメータ
+dstValueは読み取り後に書き込まれます。  
+![](img/alpha-beta-dstValue.png)  
+
 `beta`がゼロの場合、出力は読み取られず、未初期化のデータ（NaNを含む）が含まれている可能性があります。
 
-これらのパラメータは、ホストメモリポインタを使用して渡されます。alphaおよびbetaのストレージデータ型は次のとおりです：
+これらのパラメータは、ホストメモリポインタを使用して渡されます。`alpha`および`beta`のストレージデータ型は次のとおりです：
 
 `HALF`および`FLOAT`テンソルの場合は`float`
 `DOUBLE`テンソルの場合は`double`
@@ -44,10 +44,8 @@ dstValueは読み取り後に書き込まれます。
 
 型変換
 データ入力`x`、フィルタ入力`w`、および出力`y`がすべてINT8データ型の場合、関数`cudnnConvolutionBiasActivationForward()`は型変換を行います。アキュムレータはオーバーフロー時にラップする32ビット整数です。
+![](img/cudnnConvolutionBiasActivationForward.png)
 
-cpp
-コードをコピーする
-INT8のcudnnConvolutionBiasActivationForward
 非推奨ポリシー
 cuDNNは、すべてのAPIおよびenumの変更に対して、迅速なイノベーションを可能にするために、簡略化された2段階の非推奨ポリシーを使用します：
 
@@ -64,79 +62,82 @@ cuDNNは、すべてのAPIおよびenumの変更に対して、迅速なイノ�
 
 非推奨の関数のプロトタイプは、CUDNN_DEPRECATEDマクロを使用してcuDNNのヘッダーに追加されます。-DCUDNN_WARN_DEPRECATEDスイッチをコンパイラに渡すと、コード内の非推奨関数呼び出しがコンパイラ警告を発します。たとえば：
 
-scss
-コードをコピーする
-警告： 'cudnnStatus_t cudnnRNNSetClip_v8(cudnnRNNDescriptor_t, cudnnRNNClipMode_t, ...)' は非推奨です [-Wdeprecated-declarations]
+```scss
+warning: 'cudnnStatus_t cudnnRNNSetClip_v8(cudnnRNNDescriptor_t, cudnnRNNClipMode_t, ...)' is deprecated [-Wdeprecated-declarations]
+```
 または
+```scss
+warning C4996: 'cudnnRNNSetClip_v8': was declared deprecated
+```
 
-arduino
-コードをコピーする
-警告C4996： 'cudnnRNNSetClip_v8'： 非推奨として宣言されました
 上記の警告は、コンパイラ警告がエラーとして扱われるソフトウェアセットアップでのビルドの中断を避けるためにデフォルトで無効にされています。
 
 同様に、非推奨のenum値についても、非推奨値を使用しようとするとコンパイラが警告を発します：
 
-arduino
-コードをコピーする
-警告： 'EXAMPLE_VAL' は非推奨です： 値が許可されていません [-Wdeprecated-declarations]
+```scss
+warning: 'EXAMPLE_VAL' is deprecated: value not allowed [-Wdeprecated-declarations]
+```
 または
 
-arduino
-コードをコピーする
-警告C4996： 'EXAMPLE_VAL'： 非推奨として宣言されました
+```scss
+warning  C4996: 'EXAMPLE_VAL': was declared deprecated
+```
+
 特別なケース：APIの動作変更
-開発者への驚きを避けるために、特定のAPI関数の2つのメジャーバージョン間の動作変更は、関数に_vタグを付け、現在のメジャーcuDNNバージョンに続く形式で対応します。次のメジャーリリースでは、非推奨の関数が削除され、その名前は再利用されません（新しいAPIはまず_vタグなしで導入されます）。
+開発者への驚きを避けるために、特定のAPI関数の2つのメジャーバージョン間の動作変更は、関数に`_v`タグを付け、現在のメジャーcuDNNバージョンに続く形式で対応します。次のメジャーリリースでは、非推奨の関数が削除され、その名前は再利用されません（新しいAPIはまず`_v`タグなしで導入されます）。
 
 このように関数の動作を更新することで、API呼び出しが変更されたcuDNNバージョンをAPIの名前に埋め込むことができます。その結果、APIの変更は追跡および文書化が容易になります。
 
-cuDNNの2つの連続したメジャーリリース、バージョン8および9を使用した例を使用して、このプロセスを説明します。この例では、API関数foo()の動作がcuDNN v7からcuDNN v8に変更されます。
+cuDNNの2つの連続したメジャーリリース、バージョン8および9を使用した例を使用して、このプロセスを説明します。この例では、API関数`foo()`の動作がcuDNN v7からcuDNN v8に変更されます。
 
 メジャーリリース8
-更新されたAPIはfoo_v8()として導入されます。後方互換性を維持するために、非推奨のAPI foo()は次のメジャーリリースまで変更されません。
+更新されたAPIは`foo_v8()`として導入されます。後方互換性を維持するために、非推奨のAPI`foo()`は次のメジャーリリースまで変更されません。
 
 メジャーリリース9
-非推奨のAPI foo()は永久に削除され、その名前は再利用されません。foo_v8()関数は、廃止されたfoo()呼び出しに取って代わります。
+非推奨のAPI `foo()`は永久に削除され、その名前は再利用されません。`foo_v8()`関数は、廃止された`foo()`呼び出しに取って代わります。
 
 GPUとドライバの要件
-最新の互換性ソフトウェアバージョン、OS、CUDA、CUDAドライバ、およびNVIDIAハードウェアについては、cuDNNサポートマトリックスを参照してください。
+最新の互換性ソフトウェアバージョン、OS、CUDA、CUDAドライバ、およびNVIDIAハードウェアについては、[cuDNNサポートマトリックス](https://docs.nvidia.com/deeplearning/cudnn/latest/reference/support-matrix.html#support-matrix)を参照してください。
 
 畳み込みのための規約と機能
 畳み込み関数は次のとおりです：
 
-cudnnConvolutionBackwardData()
-cudnnConvolutionBiasActivationForward()
-cudnnConvolutionForward()
-cudnnConvolutionBackwardBias()
-cudnnConvolutionBackwardFilter()
+- cudnnConvolutionBackwardData()
+- cudnnConvolutionBiasActivationForward()
+- cudnnConvolutionForward()
+- cudnnConvolutionBackwardBias()
+- cudnnConvolutionBackwardFilter()
+
 畳み込みの公式
-このセクションでは、cudnnConvolutionForward()パスのcuDNN畳み込み関数で実装されているさまざまな畳み込み公式について説明します。
+このセクションでは、`cudnnConvolutionForward()`パスのcuDNN畳み込み関数で実装されているさまざまな畳み込み公式について説明します。
 
 次の表に示す畳み込み用語は、後に続くすべての畳み込み公式に適用されます。
 
 畳み込み用語
-用語	説明
-x	入力（画像）テンソル
-w	ウェイトテンソル
-y	出力テンソル
-n	現在のバッチサイズ
-c	現在の入力チャネル
-C	総入力チャネル
-H	入力画像の高さ
-W	入力画像の幅
-k	現在の出力チャネル
-K	総出力チャネル
-p	現在の出力の高さ位置
-q	現在の出力の幅位置
-G	グループ数
-pad	パディング値
-u	垂直方向のサブサンプルストライド（高さ方向）
-v	水平方向のサブサンプルストライド（幅方向）
-dil h	垂直方向のダイレーション（高さ方向）
-dil w	水平方向のダイレーション（幅方向）
-r	現在のフィルタの高さ
-R	総フィルタの高さ
-s	現在のフィルタの幅
-S	総フィルタの幅
+|----|-----|
+|用語|説明|
+|x|入力（画像）テンソル|
+|w|ウェイトテンソル|
+|y|出力テンソル|
+|n|現在のバッチサイズ|
+|c|現在の入力チャネル|
+|C|総入力チャネル|
+|H|入力画像の高さ|
+|W|入力画像の幅|
+|k|現在の出力チャネル|
+|K|総出力チャネル|
+|p|現在の出力の高さ位置|
+|q|現在の出力の幅位置|
+|G|グループ数|
+|pad|パディング値|
+|u|垂直方向のサブサンプルストライド（高さ方向）|
+|v|水平方向のサブサンプルストライド（幅方向）|
+|dil_h|垂直方向のダイレーション（高さ方向）|
+|dil_w|水平方向のダイレーション（幅方向）|
+|r|現在のフィルタの高さ|
+|R|総フィルタの高さ|
+|s|現在のフィルタの幅|
+|S|総フィルタの幅|
 CuDNN_CROSS_CORRELATIONモードに設定された畳み込み
 パディング付き畳み込み
 サブサンプルストライド付き畳み込み

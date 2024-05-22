@@ -265,8 +265,7 @@ GNU Debugger（GDB）で各cuDNNライブラリの難読化されたシンボル
 .symファイルを別のデバッグ情報ファイルとしてデプロイ
 以下のコードは、x86_64 Ubuntu 22.04で難読化されたシンボルを使用する推奨方法を示しています：
 
-sh
-コードをコピーする
+```sh
 # ライブラリのビルドIDを確認
 $ readelf -n /usr/lib/x86_64-linux-gnu/libcudnn_graph.so
 
@@ -281,25 +280,29 @@ $ eu-unstrip /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9.0.0 libcudnn_graph.so
 # ビルドIDを2つの部分に分割し、最初の2文字をディレクトリとして使用
 # 残りの文字を.debug拡張子を持つファイル名として使用
 $ cp libcudnn_graph.so.9.0.0.sym /usr/lib/debug/.build-id/45/7c8f5dea095b0f90af2abddfcb69946df61b76.debug
+```
+
 シンボル化の例
 シンボル化の使用例を簡単に示します。test_sharedという名前のサンプルアプリケーションがcuDNN APIのcudnnDestroy()を呼び出し、セグメンテーションフォルトを引き起こす場合、デフォルトのcuDNNインストールと難読化されたシンボルがない場合のGDBの出力は次のようになります：
 
-sh
-コードをコピーする
+```sh
 Thread 1 "test_shared" received signal SIGSEGV, Segmentation fault.
 0x00007ffff7a4ac01 in ?? () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 (gdb) bt
 #0  0x00007ffff7a4ac01 in ?? () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 #1  0x00007ffff7a4c919 in cudnnDestroy () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 #2  0x00000000004007b7 in main ()
+```
+
 前述の方法のいずれかを使用して難読化されたシンボルを適用した後、スタックトレースは次のようになります：
 
-sh
-コードをコピーする
+```sh
 Thread 1 "test_shared" received signal SIGSEGV, Segmentation fault.
 0x00007ffff7a4ac01 in libcudnn_graph_148ced18265f5231d89551dcbdcf5cf3fe6d77d1 () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 (gdb) bt
 #0  0x00007ffff7a4ac01 in libcudnn_graph_148ced18265f5231d89551dcbdcf5cf3fe6d77d1 () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 #1  0x00007ffff7a4c919 in cudnnDestroy () from /usr/lib/x86_64-linux-gnu/libcudnn_graph.so.9
 #2  0x00000000004007b7 in main ()
+```
+
 シンボル化されたコールスタックは、NVIDIAに提供されるバグ記述の一部として文書化できます。

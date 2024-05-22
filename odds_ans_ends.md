@@ -167,12 +167,12 @@ C_g = \frac{C}{G}, K_g = \frac{K}{G}, y_{n,k,p,q} = \sum_{c}^{C_g} \sum_{r}^{R} 
 
 グループ化畳み込み  
 cuDNNは、畳み込みディスクリプタ`convDesc`に対して`cudnnSetConvolutionGroupCount()`を使用して`groupCount > 1`を設定することで、グループ化畳み込みをサポートします。
-デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は$1$に設定されています。
+デフォルトでは、畳み込みディスクリプタ`convDesc`の`groupCount`は1に設定されています。
 
 基本的な考え方
-概念的には、グループ化畳み込みでは、入力チャネルとフィルタチャネルが独立したグループのgroupCount数に分割され、各グループにはチャネル数が減少します。その後、これらの入力グループとフィルタグループに対して別々に畳み込み操作が実行されます。例えば、次のように考えてください：入力チャネルの数が4で、フィルタチャネルの数が12の場合。通常の非グループ化畳み込みでは、実行される計算操作の数は12*4です。
+概念的には、グループ化畳み込みでは、入力チャネルとフィルタチャネルが独立したグループの`groupCount`数に分割され、各グループにはチャネル数が減少します。その後、これらの入力グループとフィルタグループに対して別々に畳み込み操作が実行されます。例えば、次のように考えてください：入力チャネルの数が4で、フィルタチャネルの数が12の場合。通常の非グループ化畳み込みでは、実行される計算操作の数は12*4です。
 
-groupCountが2に設定されている場合、2つの入力チャネルグループ（各2つの入力チャネルを含む）と2つのフィルタチャネルグループ（各6つのフィルタチャネルを含む）が存在します。その結果、各グループ化された畳み込みは2*6の計算操作を実行し、2つのグループ化された畳み込みが実行されます。したがって、計算の節約は2倍：（12*4）/（2*（2*6））。
+groupCountが2に設定されている場合、2つの入力チャネルグループ（各2つの入力チャネルを含む）と2つのフィルタチャネルグループ（各6つのフィルタチャネルを含む）が存在します。その結果、各グループ化された畳み込みは2\*6の計算操作を実行し、2つのグループ化された畳み込みが実行されます。したがって、計算の節約は2倍：（12\*4）/（2\*（2\*6））。
 
 cuDNNグループ化畳み込み
 グループ化畳み込みにgroupCountを使用する場合でも、テンソルディスクリプタをすべて定義して、グループごとのサイズではなく、畳み込み全体のサイズを説明する必要があります。
@@ -241,8 +241,7 @@ cuDNN 8.9.5以降、NVIDIA Hopper GPUでSMカーブアウトがサポートさ�
 
 以下のコードスニペットは、ヒューリスティックスのユースケースのサンプルです。
 
-cpp
-コードをコピーする
+```cpp
 // ヒューリスティックスディスクリプタを作成
 cudnnBackendDescriptor_t engHeur;
 cudnnBackendCreateDescriptor(CUDNN_BACKEND_ENGINEHEUR_DESCRIPTOR, &engHeur);
@@ -258,6 +257,8 @@ cudnnBackendCreateDescriptor(CUDNN_BACKEND_ENGINECFG_DESCRIPTOR, &engConfig);
 // ヒューリスティックスから最適なエンジン設定を取得
 cudnnBackendGetAttribute(engHeur, CUDNN_ATTR_ENGINEHEUR_RESULTS, CUDNN_TYPE_BACKEND_DESCRIPTOR, 1, &returnedCount, engConfig);
 // "engConfig" は目標SM数66で準備ができました
+```
+
 この機能は、通常の畳み込み（Fprop、Dgrad、Wgrad）およびConv-Bias-Act融合でサポートされています。
 
 cuDNNバックエンドエンジンでSMカーブアウトをサポートしているもの
@@ -268,10 +269,10 @@ cudnnConvolutionBiasActivationForward
 バージョンチェックとCUDNN_VERSION
 CUDNN_VERSIONの定義は次のとおりです：
 
-cpp
-コードをコピーする
+```cpp
 CUDNN_MAJOR * 10000 + CUDNN_MINOR * 100 + CUDNN_PATCHLEVEL
 CUDNN_MAJOR * 1000 + CUDNN_MINOR * 100 + CUDNN_PATCHLEVEL
+```
 したがって、CUDNN_VERSIONを使用するバージョンチェックは、適宜更新する必要があります。たとえば、ユーザーがcuDNNが9.0.0以上の場合にのみコードパスを実行したい場合、CUDNN_VERSION >= 90000ではなく、CUDNN_VERSION >= 9000のマクロ条件を使用する必要があります。
 
 cuDNNシンボルサーバ

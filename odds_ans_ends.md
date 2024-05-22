@@ -146,7 +146,13 @@ y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S s_{n,c,p+r,q+s} \times W_{k,c
 ```
 パディング付き畳み込み
 サブサンプルストライド付き畳み込み
+```math
+y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S s_{n,c,(p*u)+r,(q*v)+s} \times W_{k,c,r,s}
+```
 ダイレーション付き畳み込み
+```math
+y_{n,k,p,q} = \sum_{c}^{C} \sum_{r}^{R} \sum_{s}^S s_{n,c,p+(r*dil_h),q+(s*dil_w)} \times W_{k,c,r,s}
+```
 CuDNN_CONVOLUTIONモードに設定された畳み込み
 グループ化畳み込みを使用した畳み込み
 グループ化畳み込み

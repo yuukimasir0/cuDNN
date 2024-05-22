@@ -224,7 +224,7 @@ groupCount 1に設定されたテンソルのストライドも、任意のグ�
 |畳み込みまたは逆畳み込み (fprop(順伝播勾配), dgrad(逆伝播勾配), or wgrad(重みの勾配))|`fprop`<br>`dgrad`<br>`wgrad`|
 |グループ化畳み込みのサイズ|`C_per_group == K_per_group == {1,4,8,16,32,64,128,256}`<br>INT8はサポートされていません。|
 |データレイアウトフォーマット(NHWC/NCHW). HWC/NCHWは、3D畳み込みにおいてNDHWC/NCDHWに対応します。|NDHWC|
-|I/O 精度(FP16, FP32, INT8, or FP64)|FP16<br>FP32 - &emsp;&emsp;Ampereアーキテクチャ以前では`CUDNN_TENSOROP_MATH_ALLOW_CONVERSION`を設定することで利用可能。NVIDIA Ampere アーキテクチャではデフォルトでTF32(Tensor Float 32)が使用されます。<br>INT8 - &emsp;&emsp;INT8はdgradとwgradではサポートされていません. INT8での3D畳み込みはバックエンドAPIのみでサポートされています。詳しくは`cudnnConvolutionForward()`の表を参照してください。|
+|I/O 精度(FP16, FP32, INT8, or FP64)|FP16<br>FP32 - <br>&emsp;Ampereアーキテクチャ以前では`CUDNN_TENSOROP_MATH_ALLOW_CONVERSION`を設定することで利用可能。NVIDIA Ampere アーキテクチャではデフォルトでTF32(Tensor Float 32)が使用されます。<br>INT8 - <br>&emsp;INT8はdgradとwgradではサポートされていません. INT8での3D畳み込みはバックエンドAPIのみでサポートされています。詳しくは`cudnnConvolutionForward()`の表を参照してください。 |
 |アキュムレート(計算)精度 (FP16, FP32, INT32 or FP64)|FP32<br>INT32|
 |フィルター(カーネル)サイズ|制限なし|
 |パディング|制限なし|

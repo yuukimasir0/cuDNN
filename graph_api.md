@@ -139,38 +139,63 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 
 `ConvolutionFwd`は、フィルタデータWを使用してXの畳み込みを計算します。
 さらに、スケーリング係数ɑとꞵを使用して、この結果を前の出力とブレンドします。
-このグラフ操作は、cudnnConvolutionForward()と類似しています。
+このグラフ操作は、cudnnConvolutionForward()と似ています。
 ![](img/convolutionFwd.png)
 
 ##### NormalizationBackward
 
 `NormalizationBackward`は、勾配`dX`およびスケールとバイアスの勾配`dScale`および`dBias`を計算します。
 この操作は、アトリビュート`CUDNN_ATTR_OPERATION_NORM_BWD_MODE`によって設定される複数のモードをサポートしています。
-事前コンパイルされたエンジンはインスタンスおよびレイヤー正規化の後方計算をサポートし、バッチ正規化の後方計算は特化されたランタイムコンパイルエンジン（DReluForkDBnを参照）によってサポートされています。
+プリコンパイルされたエンジンはインスタンスおよびレイヤー正規化の後方計算をサポートし、バッチ正規化の後方計算は特化されたランタイムコンパイルエンジン（DReluForkDBnを参照）によってサポートされています。
 前方のトレーニングパス中に保存された平均と分散は、`NormBackward`操作への入力として渡されます。
 ![](img/normalizationBackward.png)
 
-
+`NormalizationBackward`におけるインスタンス正規化、レイヤー正規化および、RMS正規化
 | ノードおよびその他の属性                | インスタンス正規化の後方計算                  | レイヤー正規化の後方計算                     | RMS正規化の後方計算                         |
-|---------------------------------------|---------------------------------------------|---------------------------------------------|---------------------------------------------|
-|`operation`                            |`normBwd`                                     |`normBwd`                                     |`normBwd`                                     |
-|`X`                                    | [N, C, (D), H, W], 入力, I type               | [N, C, (D), H, W], 入力, I type               | [N, C, (D), H, W], 入力, I type               |
-|`Mean`                                 | [N,C,(1),1,1], 入力, compute type             | [N,1,(1),1,1], 入力, compute type             | 該当なし                                     |
-|`InvVariance`                          | [N,C,(1),1,1], 入力, compute type             | [N,1,(1),1,1], 入力, compute type             | [N,1,(1),1,1], 入力, compute type             |
-|`Scale`                                | [1,C,(1),1,1], input weight, W type           | [1,C,(D),H,W], input weight, W type           | [1,C,(D),H,W], input weight, W type           |
-|`DY`                                   | [N, C, (D), H, W], 入力, O type               | [N, C, (D), H, W], 入力, O type               | [N, C, (D), H, W], 入力, O type               |
-|`DX`                                   | [N, C, (D), H, W], 出力, I type               | [N, C, (D), H, W], 出力, I type               | [N, C, (D), H, W], 出力, I type               |
-|`Dscale`                               | [1,C,(1),1,1], 出力, W type                   | [1,C,(D),H,W], 出力, W type                   | [1,C,(D),H,W], 出力, W type                   |
-|`Dbias`                                | [1,C,(1),1,1], 出力, W type                   | [1,C,(D),H,W], 出力, W type                   | 任意                                         |
-|`mode`                                 | `CUDNN_INSTANCE_NORM`                        | `CUDNN_LAYER_NORM`                           | `CUDNN_RMS_NORM`                               |
-| サポートされるレイアウト                | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             |
-| サポートされるI/O type                 | FP16, FP32, BF16                             | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
-| サポートされる計算タイプ                | FP32                                         | FP32                                         | FP32                                         |
-| サポートされるW type                   | FP32                                         | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
-| I/O typeのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                             |
+|---------------------------------------|---------------------------------------------|---------------------------------------------|-------------------------------------------|
+|`operation`                            |`normBwd`                                    |`normBwd`                                    |`normBwd`                                  |
+|`X`                                    | [N,C,(D),H,W], 入力, I type                 | [N,C,(D),H,W], 入力, I type                  | [N,C,(D),H,W], 入力, I type               |
+|`Mean`                                 | [N,C,(1),1,1], 入力, compute type           | [N,1,(1),1,1], 入力, compute type            | 該当なし                                  |
+|`InvVariance`                          | [N,C,(1),1,1], 入力, compute type           | [N,1,(1),1,1], 入力, compute type            | [N,1,(1),1,1], 入力, compute type         |
+|`Scale`                                | [1,C,(1),1,1], input weight, W type         | [1,C,(D),H,W], input weight, W type         | [1,C,(D),H,W], input weight, W type       |
+|`DY`                                   | [N,C,(D),H,W], 入力, O type                 | [N,C,(D),H,W], 入力, O type                  | [N,C,(D),H,W], 入力, O type               |
+|`DX`                                   | [N,C,(D),H,W], 出力, I type                 | [N,C,(D),H,W], 出力, I type                  | [N,C,(D),H,W], 出力, I type               |
+|`Dscale`                               | [1,C,(1),1,1], 出力, W type                 | [1,C,(D),H,W], 出力, W type                  | [1,C,(D),H,W], 出力, W type               |
+|`Dbias`                                | [1,C,(1),1,1], 出力, W type                 | [1,C,(D),H,W], 出力, W type                  | 任意                                      |
+|`mode`                                 | `CUDNN_INSTANCE_NORM`                       | `CUDNN_LAYER_NORM`                          | `CUDNN_RMS_NORM`                          |
+| サポートされるレイアウト                | NC(D)HW, N(D)HWC                            | NC(D)HW, N(D)HWC                            | NC(D)HW, N(D)HWC                          |
+| サポートされるI/O type                 | FP16, FP32, BF16                            | FP16, FP32, BF16                            | FP16, FP32, BF16                          |
+| サポートされる計算タイプ                | FP32                                        | FP32                                        | FP32                                      |
+| サポートされるW type                   | FP32                                        | FP16, FP32, BF16                            | FP16, FP32, BF16                          |
+| I/O typeのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                            |
 
 
-各操作について、すべての適用可能なテンソルは同じレイアウトを持たなければなりません。混合I/O typeや混合計算 typeはサポートされていません。
+各操作について、すべての適用可能なテンソルは同じレイアウトを持たなければなりません。混合I/O typeや混合compute typeはサポートされていません。
 
 レイヤー正規化およびRMS正規化も、特化されたランタイムコンパイルエンジンによってサポートされています。
 これらの正規化の後方計算操作に対しては、`CUDNN_ATTR_ENGINE_GLOBAL_INDEX = 3`が適用されます。これらのより高性能なエンジンでは、`sizeof(Itype) >= sizeof(Otype)`という制限が適用されます。
+
+##### NormalizationForward
+`NormalizationForward`は、入力`X`から正規化出力`Y`を計算します。
+この操作は、推論フェーズとトレーニングフェーズの両方で使用されます。
+フェーズはアトリビュート`CUDNN_ATTR_OPERATION_NORM_FWD_PHASE`によって区別されます。
+
+![](img/normalizationForward.png)
+
+| ノードおよびその他の属性                | インスタンス正規化の前方計算                  | レイヤー正規化の前方計算                     | RMS正規化の前方計算                         |
+|---------------------------------------|---------------------------------------------|---------------------------------------------|---------------------------------------------|
+| operation                             | normFwd                                      | normFwd                                      | normFwd                                      |
+| X                                     | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             |
+| Mean                                  | [N,C,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | N/A                                     |
+| InvVariance                           | [N,C,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode CUDNN_NORM_FWD_TRAINING |
+| Scale                                 | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | [1,C,(D),H,W], input weight, W type          |
+| Bias                                  | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | Optional (no bias by default)               |
+| Y                                     | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            |
+| epsilonDesc                           | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   |
+| mode                                  | CUDNN_INSTANCE_NORM                          | CUDNN_LAYER_NORM                             | CUDNN_RMS_NORM                               |
+| Supported fmode                       | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE |
+| サポートされるレイアウト                | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             |
+| サポートされるIおよびOタイプ           | FP16, FP32, BF16                             | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
+| サポートされる計算タイプ               | FP32                                         | FP32                                         | FP32                                         |
+| サポートされるウェイトタイプ, W type    | FP32                                         | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
+| I/Oタイプのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                             |

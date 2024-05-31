@@ -217,7 +217,7 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 
 サポート表面を以下の一般的なパターンをカバーするものと考えることができます：
 
-- MatMul融合: $g_2(C = matmul(A = g_{1A}(\rm{inputs}), B = g_{1B}(\rm{inputs})),\rm{inputs})$
+- MatMul融合: $g_2(C = \rm{matmul}(A = g_{1A}(\rm{inputs}), B = g_{1B}(\rm{inputs})),\rm{inputs})$
 - ConvolutionFwd融合: $g_2(Y = \rm{convolutionFwd}(X = g_1(\rm{inputs}), W),\rm{inputs})$
 - ConvolutionBwdFilter融合: $g_2(dw = \rm{convolutionBwdFiler}(dy, X = g_1(\rm{inputs})), \rm{inputs})$
 - ConvolutionBwdData融合: $g_2(dx = \rm{convolutionBwdData}(dy = g_1(\rm{inputs}), W), \rm{inputs})$

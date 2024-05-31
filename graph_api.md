@@ -170,7 +170,8 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 | I/O typeのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                            |
 
 
-各操作について、すべての適用可能なテンソルは同じレイアウトを持たなければなりません。混合I/O typeや混合compute typeはサポートされていません。
+各操作について、すべてのテンソルは同じレイアウトである必要があります。
+混合I/O typeや混合compute typeはサポートされていません。
 
 レイヤー正規化およびRMS正規化も、特化されたランタイムコンパイルエンジンによってサポートされています。
 これらの正規化の後方計算操作に対しては、`CUDNN_ATTR_ENGINE_GLOBAL_INDEX = 3`が適用されます。これらのより高性能なエンジンでは、`sizeof(Itype) >= sizeof(Otype)`という制限が適用されます。
@@ -199,3 +200,25 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 | サポートされる計算タイプ               | FP32                                         | FP32                                         | FP32                                         |
 | サポートされるウェイトタイプ, W type    | FP32                                         | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
 | I/Oタイプのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                             |
+
+各操作に対して、すべてのテンソルは同じレイアウトである必要があります。
+
+レイヤー正規化（Layer Norm）およびRMS正規化（RMS Norm）は、特化されたランタイムコンパイルエンジンによってもサポートされています。
+これには、`fmode`が`CUDNN_NORM_FWD_TRAINING`に設定された`CUDNN_ATTR_ENGINE_GLOBAL_INDEX = 3`および`fmode`が`CUDNN_NORM_FWD_INFERENCE`に設定され<た`CUDNN_ATTR_ENGINE_GLOBAL_INDEX = 4`が含まれます。
+これらの高性能なエンジンには、`sizeof(Itype) >= sizeof(Otype)`の制約が適用されます。
+ランタイムコンパイルされていないエンジンの場合、W型は計算型です。
+
+##### ジェネリックランタイム融合エンジン
+前のセクションで説明したエンジンは単一操作パターンをサポートしています。
+もちろん、融合を面白くするためには、グラフが複数の操作をサポートする必要があります。
+そして理想的には、サポートされるパターンが多様なユースケースをカバーするために柔軟である必要があります。
+この一般性を達成するために、cuDNNはグラフパターンに基づいてランタイムでカーネル（またはカーネル群）を生成するランタイム融合エンジンを備えています。
+このセクションでは、これらのランタイム融合エンジン（つまり、`CUDNN_BEHAVIOR_NOTE_RUNTIME_COMPILATION`行動メモのあるエンジン）によってサポートされるパターンの概要を示します。
+
+サポート表面を以下の一般的なパターンをカバーするものと考えることができます：
+
+- MatMul融合: $g_2(C = matmul(A = g_{1A}(inputs), B = g_{1B}(inputs)),inputs)$
+- ConvolutionFwd融合: $g_2(Y = convolutionFwd(X = g_1(inputs), W),inputs)$
+- ConvolutionBwdFilter融合: g_2(dw = convolutionBwdFiler(dy, X = g_1(inputs)), inputs)
+- ConvolutionBwdData融合: g_2(dx = convolutionBwdData(dy = g_1(inputs), W), inputs)
+- Pointwise融合: g_2(inputs)

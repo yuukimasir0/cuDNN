@@ -184,16 +184,16 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 
 | ノードおよびその他の属性                | インスタンス正規化の前方計算                  | レイヤー正規化の前方計算                     | RMS正規化の前方計算                         |
 |---------------------------------------|---------------------------------------------|---------------------------------------------|---------------------------------------------|
-| operation                             | normFwd                                      | normFwd                                      | normFwd                                      |
-| X                                     | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             |
-| Mean                                  | [N,C,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | N/A                                     |
-| InvVariance                           | [N,C,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode `CUDNN_NORM_FWD_TRAINING` | [N,1,(1),1,1], output, compute type, only applicable to fmode CUDNN_NORM_FWD_TRAINING |
-| Scale                                 | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | [1,C,(D),H,W], input weight, W type          |
-| Bias                                  | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | Optional (no bias by default)               |
-| Y                                     | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            |
-| epsilonDesc                           | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   |
-| mode                                  | CUDNN_INSTANCE_NORM                          | CUDNN_LAYER_NORM                             | CUDNN_RMS_NORM                               |
-| Supported fmode                       | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE | CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE |
+|`operation                             |`normFwd`                                     |`normFwd`                                     |`normFwd`                                    |
+|`X                                     | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             | [N, C, (D), H, W], input, I type             |
+|`Mean                                  | [N,C,(1),1,1], output, compute type,fmode `CUDNN_NORM_FWD_TRAINING`にのみ適用 | [N,1,(1),1,1], output, compute type, fmode `CUDNN_NORM_FWD_TRAINING`にのみ適用 | N/A |
+|`InvVariance`                          | [N,C,(1),1,1], output, compute type,fmode `CUDNN_NORM_FWD_TRAINING`にのみ適用 | [N,1,(1),1,1], output, compute type, fmode `CUDNN_NORM_FWD_TRAINING`にのみ適用 | [N,1,(1),1,1], output, compute type, fmode `CUDNN_NORM_FWD_TRAINING`にのみ適用 |
+|`Scale`                                | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | [1,C,(D),H,W], input weight, W type          |
+|`Bias`                                 | [1,C,(1),1,1], input weight, W type          | [1,C,(D),H,W], input weight, W type          | Optional (no bias by default)               |
+|`Y`                                    | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            | [N, C, (D), H, W], output, O type            |
+|`epsilonDesc`                          | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   | [1,1,1,1], input, constant                   |
+|`mode`                                 | `CUDNN_INSTANCE_NORM`                          | `CUDNN_LAYER_NORM`                             | `CUDNN_RMS_NORM`                               |
+| Supported `fmode`                      | `CUDNN_NORM_FWD_TRAINING`, `CUDNN_NORM_FWD_INFERENCE` | `CUDNN_NORM_FWD_TRAINING`, `CUDNN_NORM_FWD_INFERENCE` | `CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE` |
 | サポートされるレイアウト                | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             |
 | サポートされるIおよびOタイプ           | FP16, FP32, BF16                             | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
 | サポートされる計算タイプ               | FP32                                         | FP32                                         | FP32                                         |

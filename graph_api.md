@@ -244,13 +244,13 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 | 機能                                       | Support Surface 90   | Support Surface 80   | Support Surface 70   |
 |------------------------------------------|----------------------|----------------------|----------------------|
 | Compute Capability                   | >= 9.0               | >= 8.0               | >= 7.0               |
-| MatMul Fusions                       | サポート              | サポート              | サポート              |
-| ConvolutionFwd Fusions               | サポート              | サポート              | サポート              |
-| ConvolutionBwdFilter Fusions         | サポート              | サポートなし           | サポート              |
-| ConvolutionBwdData Fusions           | 部分的にサポート         | サポートなし           | サポート              |
-| Pointwise and Reduction Fusions      | サポートなし           | サポートなし           | サポート              |
-| FP8 MatMul and Convolution Operations| サポート              | >= 8.9 でサポート | サポートなし           |
-| $g_1$ (Mainloop) Fusions               | サポート              | サポート              | 部分的にサポート         |
-| $g_2$ (Epilogue) Fusions               | サポート              | サポート              | サポート              |
-| Mixed Input Precision MatMul/Convolution | サポート              | サポート              | サポートなし           |
+| `MatMul` 融合                       | サポート              | サポート              | サポート              |
+| `ConvolutionFwd` 融合               | サポート              | サポート              | サポート              |
+| `ConvolutionBwdFilter` 融合         | サポート              | サポートなし           | サポート              |
+| `ConvolutionBwdData` 融合           | 部分的にサポート         | サポートなし           | サポート              |
+| `Pointwise`、 `Reduction` 融合      | サポートなし           | サポートなし           | サポート              |
+| FP8 `MatMul`、 `Convolution` 操作| サポート              | >= 8.9 でサポート | サポートなし           |
+| $g_1$(Mainloop)融合               | サポート              | サポート              | 部分的にサポート         |
+| $g_2$(Epilogue)融合               | サポート              | サポート              | サポート              |
+| 混合入力精度 MatMul/Convolution | サポート              | サポート              | サポートなし           |
 | Grouped Convolution                  | サポート              | サポート              | サポートなし           |

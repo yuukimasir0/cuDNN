@@ -195,7 +195,7 @@ cuDNNグラフAPIは、一連のグラフパターンをサポートしていま
 |`mode`                                 | `CUDNN_INSTANCE_NORM`                          | `CUDNN_LAYER_NORM`                             | `CUDNN_RMS_NORM`                               |
 | Supported `fmode`                      | `CUDNN_NORM_FWD_TRAINING`, `CUDNN_NORM_FWD_INFERENCE` | `CUDNN_NORM_FWD_TRAINING`, `CUDNN_NORM_FWD_INFERENCE` | `CUDNN_NORM_FWD_TRAINING, CUDNN_NORM_FWD_INFERENCE` |
 | サポートされるレイアウト                | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             | NC(D)HW, N(D)HWC                             |
-| サポートされるIおよびOタイプ           | FP16, FP32, BF16                             | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
+| サポートされるI/Oタイプ           | FP16, FP32, BF16                             | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
 | サポートされる計算タイプ               | FP32                                         | FP32                                         | FP32                                         |
 | サポートされるウェイトタイプ, W type    | FP32                                         | FP16, FP32, BF16                             | FP16, FP32, BF16                             |
 | I/Oタイプのアラインメント要件           | 8バイトアライン                               | 16バイトアライン                             | 16バイトアライン                             |
